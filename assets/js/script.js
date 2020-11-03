@@ -1,6 +1,7 @@
 //Global Variables
 var formEl = document.querySelector("#task-form");
 var tasksToDoEl = document.querySelector("#tasks-to-do");
+var pageContentEl = document.querySelector("#page-content");
 var taskIdCounter = 0;
 
 function taskFormHandler(event) {
@@ -44,7 +45,7 @@ function createTaskEl(taskDataObj) {
 
     var taskActionsEl = createTaskActions(taskIdCounter);
     listItemEl.appendChild(taskActionsEl);
-    
+
     tasksToDoEl.appendChild(listItemEl);
 
     taskIdCounter++;
@@ -91,4 +92,19 @@ function createTaskActions(taskId) {
     return actionContainerEl;
 }
 
+function taskButtonHandler(event) {
+    console.log(event.target);
+
+    if(event.target.matches(".delete-btn")){
+        var taskId = event.target.getAttribute("data-task-id");
+        deleteTask(taskId);
+    }
+}
+
+function deleteTask(taskId) {
+    var taskSelected = document.querySelector(".task-item[data-task-id='"+taskId+"']");
+    taskSelected.remove();
+}
+
 formEl.addEventListener("submit", taskFormHandler);
+pageContentEl.addEventListener("click", taskButtonHandler);
