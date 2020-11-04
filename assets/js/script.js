@@ -10,19 +10,26 @@ function taskFormHandler(event) {
     var taskNameInput = document.querySelector("input[name='task-name']").value;
     var taskTypeInput = document.querySelector("select[name='task-type']").value;
 
-    //package up data as an object
-    var taskDataObj = {
-        name: taskNameInput,
-        type: taskTypeInput
-    };
+    var isEdit = formEl.hasAttribute("data-task-id");
 
-    //check if input values are empty strings
-    if (!taskNameInput || !taskTypeInput) {
-        alert("You need to fill out the task form!");
-        return false;
+    if (isEdit) {
+        var taskId = formEl.getAttribute("data-task-id");
+        completeEditTask(taskNameInput, taskTypeInput, taskId);
     }
-    //send it as an argument to createTaskEl
-    createTaskEl(taskDataObj);
+    else {
+        //package up data as an object
+        var taskDataObj = {
+            name: taskNameInput,
+            type: taskTypeInput
+        };
+
+        if (!taskNameInput || !taskTypeInput){
+            alert("You need to complete the form");
+            return;
+        }
+        
+        createTaskEl(taskDataObj);
+    }
 
     formEl.reset();
 
@@ -108,7 +115,7 @@ function taskButtonHandler(event) {
 function editTask(taskId){
 
     formEl.setAttribute("data-task-id", taskId);
-    
+
     var taskSelected = document.querySelector(".task-item[data-task-id='"+taskId+"']");
     var taskName = taskSelected.querySelector("h3.task-name").textContent;
     var taskType = taskSelected.querySelector("span.task-type").textContent;
@@ -116,6 +123,19 @@ function editTask(taskId){
     document.querySelector("input[name='task-name']").value = taskName;
     document.querySelector("select[name='task-type']").value = taskType;
     document.querySelector("#save-task").textContent = "Save Task";
+}
+
+function completeEditTask(taskName, taskType, taskId){
+    //find the matching task list item
+    var taskSelected = document.querySelector(".task-item[data-task-id='"+taskId+"']");
+
+    //set new values
+    taskSelected.querySelector("h3.task-name").textContent = taskName;
+    taskSelected.querySelector("span.task-type").textContent = taskType;
+
+    formEl.removeAttribute("data-task-id");
+    document.querySelector("#save-task").textContent = "Add Task";
+
 }
 
 function deleteTask(taskId) {
